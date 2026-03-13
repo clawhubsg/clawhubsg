@@ -6,14 +6,16 @@ import { type GlobalConfig, GlobalConfigSchema, parseArk } from './schema/index.
 
 /**
  * Resolve config path with legacy fallback.
- * Checks for 'clawhub' first, falls back to legacy 'clawdhub' if it exists.
+ * Checks for 'clawhubsg' first, then falls back to legacy 'clawhub' / 'clawdhub' if they exist.
  */
 function resolveConfigPath(baseDir: string): string {
+  const clawhubsgPath = join(baseDir, 'clawhubsg', 'config.json')
   const clawhubPath = join(baseDir, 'clawhub', 'config.json')
   const clawdhubPath = join(baseDir, 'clawdhub', 'config.json')
+  if (existsSync(clawhubsgPath)) return clawhubsgPath
   if (existsSync(clawhubPath)) return clawhubPath
   if (existsSync(clawdhubPath)) return clawdhubPath
-  return clawhubPath
+  return clawhubsgPath
 }
 
 function isNonFatalChmodError(error: unknown): boolean {
@@ -24,7 +26,9 @@ function isNonFatalChmodError(error: unknown): boolean {
 
 export function getGlobalConfigPath() {
   const override =
-    process.env.CLAWHUB_CONFIG_PATH?.trim() ?? process.env.CLAWDHUB_CONFIG_PATH?.trim()
+    process.env.CLAWHUBSG_CONFIG_PATH?.trim() ??
+    process.env.CLAWHUB_CONFIG_PATH?.trim() ??
+    process.env.CLAWDHUB_CONFIG_PATH?.trim()
   if (override) return resolve(override)
 
   const home = resolveHome()
