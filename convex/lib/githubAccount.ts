@@ -7,7 +7,9 @@ import { GITHUB_PROFILE_SYNC_WINDOW_MS } from './githubProfileSync'
 const GITHUB_API = 'https://api.github.com'
 const MIN_ACCOUNT_AGE_MS = 14 * 24 * 60 * 60 * 1000
 
-type GitHubAccountGateCtx = Pick<ActionCtx, 'runQuery' | 'runMutation'>
+type GitHubAccountGateCtx = Pick<ActionCtx, 'runQuery'> & {
+  scheduler?: Pick<ActionCtx['scheduler'], 'runAfter'>
+}
 
 type GitHubUser = {
   login?: string
@@ -36,42 +38,12 @@ export async function requireGitHubAccountAge(ctx: GitHubAccountGateCtx, userId:
   if (!user || user.deletedAt || user.deactivatedAt) throw new ConvexError('User not found')
 
   const now = Date.now()
-  let createdAt = user.githubCreatedAt ?? null
+  const createdAt = user.githubCreatedAt ?? null
 
   if (!createdAt) {
-    const providerAccountId = await ctx.runQuery(
-      internal.githubIdentity.getGitHubProviderAccountIdInternal,
-      { userId },
-    )
-    if (!providerAccountId) {
-      // Invariant: GitHub is our only auth provider, so this should never happen.
-      throw new ConvexError('GitHub account required')
-    }
-    assertGitHubNumericId(providerAccountId)
-
-    // Fetch by immutable GitHub numeric ID to avoid username swap attacks entirely.
-    const response = await fetch(`${GITHUB_API}/user/${providerAccountId}`, {
-      headers: buildGitHubHeaders(),
-    })
-    if (!response.ok) {
-      if (response.status === 403 || response.status === 429) {
-        throw new ConvexError('GitHub API rate limit exceeded — please try again in a few minutes')
-      }
-      throw new ConvexError('GitHub account lookup failed')
-    }
-
-    const payload = (await response.json()) as GitHubUser
-    const parsed = payload.created_at ? Date.parse(payload.created_at) : Number.NaN
-    if (!Number.isFinite(parsed)) throw new ConvexError('GitHub account lookup failed')
-
-    createdAt = parsed
-    await ctx.runMutation(internal.users.setGitHubCreatedAtInternal, {
-      userId,
-      githubCreatedAt: createdAt,
-    })
+    await ctx.scheduler?.runAfter(0, internal.users.syncGitHubProfileAction, { userId })
+    throw new ConvexError('GitHub account verification still in progress. Please wait a few seconds and try again.')
   }
-
-  if (!createdAt) throw new ConvexError('GitHub account lookup failed')
 
   const ageMs = now - createdAt
   if (ageMs < MIN_ACCOUNT_AGE_MS) {
@@ -118,6 +90,7 @@ export async function syncGitHubProfile(ctx: ActionCtx, userId: Id<'users'>) {
   const payload = (await response.json()) as GitHubUser
   const newLogin = payload.login?.trim()
   const newImage = payload.avatar_url?.trim()
+  const githubCreatedAt = payload.created_at ? Date.parse(payload.created_at) : Number.NaN
 
   const profileName = payload.name?.trim()
 
@@ -140,4 +113,10 @@ export async function syncGitHubProfile(ctx: ActionCtx, userId: Id<'users'>) {
   }
 
   await ctx.runMutation(internal.users.syncGitHubProfileInternal, args)
+  if (Number.isFinite(githubCreatedAt) && user.githubCreatedAt !== githubCreatedAt) {
+    await ctx.runMutation(internal.users.setGitHubCreatedAtInternal, {
+      userId,
+      githubCreatedAt,
+    })
+  }
 }

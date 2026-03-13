@@ -73,6 +73,34 @@ function formatReportError(error: unknown) {
   return 'Unable to submit report. Please try again.'
 }
 
+function formatMutationError(error: unknown, fallback: string) {
+  if (error && typeof error === 'object' && 'data' in error) {
+    const data = (error as { data?: unknown }).data
+    if (typeof data === 'string' && data.trim()) return data.trim()
+    if (
+      data &&
+      typeof data === 'object' &&
+      'message' in data &&
+      typeof (data as { message?: unknown }).message === 'string'
+    ) {
+      const message = (data as { message?: string }).message?.trim()
+      if (message) return message
+    }
+  }
+
+  if (error instanceof Error) {
+    const cleaned = error.message
+      .replace(/\[CONVEX[^\]]*\]\s*/g, '')
+      .replace(/\[Request ID:[^\]]*\]\s*/g, '')
+      .replace(/^Server Error Called by client\s*/i, '')
+      .replace(/^ConvexError:\s*/i, '')
+      .trim()
+    if (cleaned && cleaned !== 'Server Error') return cleaned
+  }
+
+  return fallback
+}
+
 export function SkillDetailPage({
   slug,
   canonicalOwner,
@@ -105,6 +133,10 @@ export function SkillDetailPage({
   const [reportReason, setReportReason] = useState('')
   const [reportError, setReportError] = useState<string | null>(null)
   const [isSubmittingReport, setIsSubmittingReport] = useState(false)
+  const [optimisticStarred, setOptimisticStarred] = useState<boolean | null>(null)
+  const [isTogglingStar, setIsTogglingStar] = useState(false)
+  const [pendingStarDelta, setPendingStarDelta] = useState(0)
+  const [pendingStarBaseCount, setPendingStarBaseCount] = useState<number | null>(null)
 
   const isLoadingSkill = result === undefined
   const skill = result?.skill
@@ -124,6 +156,11 @@ export function SkillDetailPage({
   const isStarred = useQuery(
     api.stars.isStarred,
     isAuthenticated && skill ? { skillId: skill._id } : 'skip',
+  )
+  const displayedIsStarred = optimisticStarred ?? (isStarred ?? false)
+  const displayedStarCount = useMemo(
+    () => Math.max(0, (skill?.stats.stars ?? 0) + pendingStarDelta),
+    [pendingStarDelta, skill?.stats.stars],
   )
 
   const canManage = canManageSkill(me, skill)
@@ -239,6 +276,21 @@ export function SkillDetailPage({
     }
   }, [latestVersion, tagVersionId])
 
+  useEffect(() => {
+    setOptimisticStarred(null)
+    setIsTogglingStar(false)
+    setPendingStarDelta(0)
+    setPendingStarBaseCount(null)
+  }, [skill?._id])
+
+  useEffect(() => {
+    if (pendingStarBaseCount === null) return
+    if ((skill?.stats.stars ?? 0) !== pendingStarBaseCount) {
+      setPendingStarDelta(0)
+      setPendingStarBaseCount(null)
+    }
+  }, [pendingStarBaseCount, skill?.stats.stars])
+
   const closeReportDialog = () => {
     setIsReportDialogOpen(false)
     setReportReason('')
@@ -251,6 +303,29 @@ export function SkillDetailPage({
     setReportError(null)
     setIsSubmittingReport(false)
     setIsReportDialogOpen(true)
+  }
+
+  const handleToggleStar = async () => {
+    if (!skill || isTogglingStar) return
+
+    const serverStarred = isStarred ?? false
+    const nextStarred = !(optimisticStarred ?? serverStarred)
+    setOptimisticStarred(nextStarred)
+    setIsTogglingStar(true)
+
+    try {
+      const result = await toggleStar({ skillId: skill._id })
+      setOptimisticStarred(result.starred)
+      setPendingStarBaseCount(skill.stats.stars ?? 0)
+      setPendingStarDelta(result.starred === serverStarred ? 0 : result.starred ? 1 : -1)
+    } catch (error) {
+      setOptimisticStarred(null)
+      setPendingStarDelta(0)
+      setPendingStarBaseCount(null)
+      window.alert(formatMutationError(error, 'Unable to update star. Please try again.'))
+    } finally {
+      setIsTogglingStar(false)
+    }
   }
 
   const submitTag = () => {
@@ -320,8 +395,10 @@ export function SkillDetailPage({
           canManage={canManage}
           isAuthenticated={isAuthenticated}
           isStaff={isStaff}
-          isStarred={isStarred}
-          onToggleStar={() => void toggleStar({ skillId: skill._id })}
+          isStarred={displayedIsStarred}
+          starCount={displayedStarCount}
+          isStarPending={isTogglingStar}
+          onToggleStar={() => void handleToggleStar()}
           onOpenReport={openReportDialog}
           forkOf={forkOf}
           forkOfLabel={forkOfLabel}

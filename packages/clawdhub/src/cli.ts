@@ -1,9 +1,7 @@
 #!/usr/bin/env node
-import { stat } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import { Command } from 'commander'
 import { getCliBuildLabel, getCliVersion } from './cli/buildInfo.js'
-import { resolveClawdbotDefaultWorkspace } from './cli/clawdbotConfig.js'
 import { cmdLoginFlow, cmdLogout, cmdWhoami } from './cli/commands/auth.js'
 import {
   cmdDeleteSkill,
@@ -100,33 +98,7 @@ async function resolveWorkdir(explicit?: string) {
     process.env.CLAWHUB_WORKDIR?.trim() ??
     process.env.CLAWDHUB_WORKDIR?.trim()
   if (envWorkdir) return resolve(envWorkdir)
-
-  const cwd = resolve(process.cwd())
-  const hasMarker = await hasClawhubMarker(cwd)
-  if (hasMarker) return cwd
-
-  const clawdbotWorkspace = await resolveClawdbotDefaultWorkspace()
-  return clawdbotWorkspace ? resolve(clawdbotWorkspace) : cwd
-}
-
-async function hasClawhubMarker(workdir: string) {
-  const lockfile = join(workdir, '.clawhub', 'lock.json')
-  if (await pathExists(lockfile)) return true
-  const markerDir = join(workdir, '.clawhub')
-  if (await pathExists(markerDir)) return true
-  const legacyLockfile = join(workdir, '.clawdhub', 'lock.json')
-  if (await pathExists(legacyLockfile)) return true
-  const legacyMarkerDir = join(workdir, '.clawdhub')
-  return pathExists(legacyMarkerDir)
-}
-
-async function pathExists(path: string) {
-  try {
-    await stat(path)
-    return true
-  } catch {
-    return false
-  }
+  return resolve(process.cwd())
 }
 
 program

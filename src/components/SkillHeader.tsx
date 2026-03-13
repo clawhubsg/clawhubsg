@@ -46,6 +46,8 @@ type SkillHeaderProps = {
   isAuthenticated: boolean
   isStaff: boolean
   isStarred: boolean | undefined
+  starCount: number
+  isStarPending: boolean
   onToggleStar: () => void
   onOpenReport: () => void
   forkOf: SkillFork | null
@@ -85,6 +87,8 @@ export function SkillHeader({
   isAuthenticated,
   isStaff,
   isStarred,
+  starCount,
+  isStarPending,
   onToggleStar,
   onOpenReport,
   forkOf,
@@ -114,6 +118,7 @@ export function SkillHeader({
   osLabels,
 }: SkillHeaderProps) {
   const formattedStats = formatSkillStatsTriplet(skill.stats)
+  const formattedStarCount = formatCompactStat(starCount)
   const suppressScanResults =
     !isStaff &&
     Boolean(modInfo?.overrideActive) &&
@@ -207,7 +212,7 @@ export function SkillHeader({
                 <strong>{PLATFORM_SKILL_LICENSE}</strong> · {PLATFORM_SKILL_LICENSE_SUMMARY}
               </div>
               <div className="stat">
-                ⭐ {formattedStats.stars} · <Package size={14} aria-hidden="true" />{' '}
+                ⭐ {formattedStarCount} · <Package size={14} aria-hidden="true" />{' '}
                 {formattedStats.downloads} · {formatCompactStat(skill.stats.installsCurrent ?? 0)} current
                 installs · {formattedStats.installsAllTime} all-time installs
               </div>
@@ -249,8 +254,10 @@ export function SkillHeader({
                   <button
                     className={`star-toggle${isStarred ? ' is-active' : ''}`}
                     type="button"
+                    disabled={isStarPending}
                     onClick={onToggleStar}
                     aria-label={isStarred ? 'Unstar skill' : 'Star skill'}
+                    aria-busy={isStarPending}
                   >
                     <span aria-hidden="true">★</span>
                   </button>

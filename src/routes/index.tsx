@@ -51,6 +51,10 @@ function SkillsHome() {
               and operational automation. Version them like npm, search them fast, and ship with
               less glue code.
             </p>
+            <p className="hero-subtitle" style={{ fontSize: '0.98rem', marginTop: 14 }}>
+              Using OpenClaw? Point your agent at <code>clawhubsg.com</code> and install skills
+              with <code>npx clawhubsg@latest install sonoscli</code>.
+            </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
               <Link to="/upload" search={{ updateSlug: undefined }} className="btn btn-primary">
                 Publish a skill

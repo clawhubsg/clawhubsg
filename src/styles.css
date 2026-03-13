@@ -137,6 +137,89 @@ code {
   text-decoration-color: rgba(255, 107, 74, 0.6);
 }
 
+.site-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.site-footer-link {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 107, 74, 0.14);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.site-footer-link:hover {
+  transform: translateY(-1px);
+  color: var(--ink);
+  border-color: rgba(255, 107, 74, 0.34);
+  box-shadow: 0 8px 18px rgba(28, 24, 21, 0.08);
+}
+
+.site-footer-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--accent-deep);
+}
+
+.site-footer-link-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site-footer-community {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.site-footer-community-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.72;
+}
+
+.site-footer-community-copy {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  opacity: 0.72;
+  text-align: center;
+}
+
+[data-theme="dark"] .site-footer-link {
+  background: rgba(34, 29, 27, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(246, 239, 228, 0.76);
+}
+
+[data-theme="dark"] .site-footer-link:hover {
+  border-color: rgba(232, 106, 71, 0.34);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
 .section-cta {
   display: flex;
   justify-content: flex-end;
@@ -1734,6 +1817,13 @@ code {
 .star-toggle:focus-visible {
   outline: 3px solid rgba(255, 107, 74, 0.35);
   outline-offset: 3px;
+}
+
+.star-toggle:disabled {
+  cursor: wait;
+  opacity: 0.8;
+  transform: none;
+  box-shadow: none;
 }
 
 [data-theme="dark"] .star-toggle {

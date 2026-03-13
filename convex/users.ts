@@ -209,6 +209,10 @@ export async function ensureHandler(ctx: MutationCtx) {
     await ctx.db.patch(userId, updates)
   }
 
+  if (!user.githubCreatedAt || !user.githubProfileSyncedAt) {
+    await ctx.scheduler.runAfter(0, internal.users.syncGitHubProfileAction, { userId })
+  }
+
   return ctx.db.get(userId)
 }
 
