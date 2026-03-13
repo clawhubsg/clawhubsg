@@ -96,13 +96,13 @@ export function getSiteMode(): SiteMode {
 }
 
 export function getSiteName(mode: SiteMode = getSiteMode()) {
-  return mode === 'souls' ? 'SoulHub' : 'ClawHub'
+  return mode === 'souls' ? 'SoulHub' : 'ClawHubSG'
 }
 
 export function getSiteDescription(mode: SiteMode = getSiteMode()) {
   return mode === 'souls'
     ? 'SoulHub — the home for SOUL.md bundles and personal system lore.'
-    : 'ClawHub — a fast skill registry for agents, with vector search.'
+    : 'ClawHubSG — a Singapore-focused skill registry for agents, local services, and automation workflows.'
 }
 
 export function getSiteUrlForMode(mode: SiteMode = getSiteMode()) {

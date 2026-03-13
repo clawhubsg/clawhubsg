@@ -44,11 +44,12 @@ function SkillsHome() {
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-copy fade-up" data-delay="1">
-            <span className="hero-badge">Lobster-light. Agent-right.</span>
-            <h1 className="hero-title">ClawHub, the skill dock for sharp agents.</h1>
+            <span className="hero-badge">Singapore-ready. Agent-right.</span>
+            <h1 className="hero-title">ClawHubSG, the skill dock for Singapore-first agents.</h1>
             <p className="hero-subtitle">
-              Upload AgentSkills bundles, version them like npm, and make them searchable with
-              vectors. No gatekeeping, just signal.
+              Discover and publish agent skills for Singapore-specific services, local workflows,
+              and operational automation. Version them like npm, search them fast, and ship with
+              less glue code.
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
               <Link to="/upload" search={{ updateSlug: undefined }} className="btn btn-primary">
@@ -73,7 +74,7 @@ function SkillsHome() {
           </div>
           <div className="hero-card hero-search-card fade-up" data-delay="2">
             <div className="hero-install" style={{ marginTop: 18 }}>
-              <div className="stat">Search skills. Versioned, rollback-ready.</div>
+              <div className="stat">Search Singapore-ready skills. Versioned, rollback-ready.</div>
               <InstallSwitcher exampleSlug="sonoscli" />
             </div>
           </div>
@@ -82,7 +83,7 @@ function SkillsHome() {
 
       <section className="section">
         <h2 className="section-title">Highlighted skills</h2>
-        <p className="section-subtitle">Curated signal — highlighted for quick trust.</p>
+        <p className="section-subtitle">Curated signal for trusted Singapore-focused automations.</p>
         <div className="grid">
           {highlighted.length === 0 ? (
             <div className="card">No highlighted skills yet.</div>
@@ -114,7 +115,7 @@ function SkillsHome() {
 
       <section className="section">
         <h2 className="section-title">Popular skills</h2>
-        <p className="section-subtitle">Most-downloaded, non-suspicious picks.</p>
+        <p className="section-subtitle">Most-downloaded, non-suspicious picks for local teams and services.</p>
         <div className="grid">
           {popular.length === 0 ? (
             <div className="card">No skills yet. Be the first.</div>

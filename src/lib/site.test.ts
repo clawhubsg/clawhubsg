@@ -124,10 +124,10 @@ describe('site helpers', () => {
   })
 
   it('derives site metadata from mode', () => {
-    expect(getSiteName('skills')).toBe('ClawHub')
+    expect(getSiteName('skills')).toBe('ClawHubSG')
     expect(getSiteName('souls')).toBe('SoulHub')
 
-    expect(getSiteDescription('skills')).toContain('ClawHub')
+    expect(getSiteDescription('skills')).toContain('ClawHubSG')
     expect(getSiteDescription('souls')).toContain('SoulHub')
 
     expect(getSiteUrlForMode('skills')).toBe('https://clawhubsg.com')
