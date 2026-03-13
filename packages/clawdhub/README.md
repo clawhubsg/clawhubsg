@@ -1,6 +1,6 @@
-# `clawhub`
+# `clawhubsg`
 
-ClawHub CLI — install, update, search, and publish agent skills as folders.
+ClawHubSG CLI — install, update, search, and publish agent skills as folders.
 
 ## Install
 
@@ -9,7 +9,7 @@ ClawHub CLI — install, update, search, and publish agent skills as folders.
 bun clawhub --help
 
 # Once published to npm
-# npm i -g clawhub
+# npm i -g clawhubsg
 ```
 
 ## Auth (publish)
@@ -26,7 +26,7 @@ clawhub login --token clh_...
 
 Notes:
 
-- Browser login opens `https://clawhub.ai/cli/auth` and completes via a loopback callback.
+- Browser login opens `https://clawhubsg.com/cli/auth` and completes via a loopback callback.
 - Token stored in `~/Library/Application Support/clawhub/config.json` on macOS (override via `CLAWHUB_CONFIG_PATH`, legacy `CLAWDHUB_CONFIG_PATH`).
 
 ## Examples
@@ -51,7 +51,7 @@ clawhub sync --root ../clawdis/skills --all --dry-run
 
 ## Defaults
 
-- Site: `https://clawhub.ai` (override via `--site` or `CLAWHUB_SITE`, legacy `CLAWDHUB_SITE`)
+- Site: `https://clawhubsg.com` (override via `--site` or `CLAWHUB_SITE`, legacy `CLAWDHUB_SITE`)
 - Registry: discovered from `/.well-known/clawhub.json` on the site (legacy `/.well-known/clawdhub.json`; override via `--registry` or `CLAWHUB_REGISTRY`)
 - Workdir: current directory (falls back to Clawdbot workspace if configured; override via `--workdir` or `CLAWHUB_WORKDIR`)
 - Install dir: `./skills` under workdir (override via `--dir`)

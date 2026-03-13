@@ -1,9 +1,16 @@
 export type SiteMode = 'skills' | 'souls'
 
-const DEFAULT_CLAWHUB_SITE_URL = 'https://clawhub.ai'
+const DEFAULT_CLAWHUB_SITE_URL = 'https://clawhubsg.com'
 const DEFAULT_ONLYCRABS_SITE_URL = 'https://onlycrabs.ai'
 const DEFAULT_ONLYCRABS_HOST = 'onlycrabs.ai'
-const LEGACY_CLAWDHUB_HOSTS = new Set(['clawdhub.com', 'www.clawdhub.com', 'auth.clawdhub.com'])
+const LEGACY_CLAWDHUB_HOSTS = new Set([
+  'clawdhub.com',
+  'www.clawdhub.com',
+  'auth.clawdhub.com',
+  'clawhub.ai',
+  'www.clawhub.ai',
+  'auth.clawhub.ai',
+])
 
 function readMetaEnv(value?: string | null) {
   const trimmed = value?.trim()

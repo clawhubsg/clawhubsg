@@ -1,10 +1,11 @@
 {
-  "name": "clawhub",
+  "name": "clawhubsg",
   "version": "0.7.0",
-  "description": "ClawHub CLI \\u2014 install, update, search, and publish agent skills.",
+  "description": "ClawHubSG CLI \\u2014 install, update, search, and publish agent skills.",
   "license": "MIT",
   "type": "module",
   "bin": {
+    "clawhubsg": "bin/clawdhub.js",
     "clawhub": "bin/clawdhub.js",
     "clawdhub": "bin/clawdhub.js"
   },

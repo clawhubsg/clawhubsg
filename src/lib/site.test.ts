@@ -42,15 +42,15 @@ afterEach(() => {
 
 describe('site helpers', () => {
   it('returns default and env configured site URLs', () => {
-    expect(getClawHubSiteUrl()).toBe('https://clawhub.ai')
+    expect(getClawHubSiteUrl()).toBe('https://clawhubsg.com')
     withMetaEnv({ VITE_SITE_URL: 'https://example.com' }, () => {
       expect(getClawHubSiteUrl()).toBe('https://example.com')
     })
     withMetaEnv({ VITE_SITE_URL: 'https://clawdhub.com' }, () => {
-      expect(getClawHubSiteUrl()).toBe('https://clawhub.ai')
+      expect(getClawHubSiteUrl()).toBe('https://clawhubsg.com')
     })
     withMetaEnv({ VITE_SITE_URL: 'https://auth.clawdhub.com' }, () => {
-      expect(getClawHubSiteUrl()).toBe('https://clawhub.ai')
+      expect(getClawHubSiteUrl()).toBe('https://clawhubsg.com')
     })
   })
 
@@ -85,11 +85,11 @@ describe('site helpers', () => {
       expect(getOnlyCrabsHost()).toBe('souls.example.com')
       expect(detectSiteMode('souls.example.com')).toBe('souls')
       expect(detectSiteMode('sub.souls.example.com')).toBe('souls')
-      expect(detectSiteMode('clawhub.ai')).toBe('skills')
+      expect(detectSiteMode('clawhubsg.com')).toBe('skills')
 
       expect(detectSiteModeFromUrl('https://souls.example.com/x')).toBe('souls')
       expect(detectSiteModeFromUrl('souls.example.com')).toBe('souls')
-      expect(detectSiteModeFromUrl('https://clawhub.ai')).toBe('skills')
+      expect(detectSiteModeFromUrl('https://clawhubsg.com')).toBe('skills')
     })
   })
 
@@ -130,7 +130,7 @@ describe('site helpers', () => {
     expect(getSiteDescription('skills')).toContain('ClawHub')
     expect(getSiteDescription('souls')).toContain('SoulHub')
 
-    expect(getSiteUrlForMode('skills')).toBe('https://clawhub.ai')
+    expect(getSiteUrlForMode('skills')).toBe('https://clawhubsg.com')
     expect(getSiteUrlForMode('souls')).toBe('https://onlycrabs.ai')
   })
 })

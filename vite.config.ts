@@ -57,6 +57,13 @@ const config = defineConfig({
     devtools(),
     nitro({
       serverDir: 'server',
+      devProxy: {
+        '/api/**': {
+          target: 'http://127.0.0.1:3210',
+          changeOrigin: true,
+          ws: true,
+        },
+      },
       rollupConfig: {
         onwarn: handleRollupWarning,
       },
@@ -69,6 +76,15 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  server: {
+    host: '0.0.0.0',
+    allowedHosts: ['clawhubsg.com', 'www.clawhubsg.com'],
+    hmr: {
+      host: 'clawhubsg.com',
+      protocol: 'wss',
+      clientPort: 443,
+    },
+  },
   build: {
     chunkSizeWarningLimit: 900,
     rollupOptions: {

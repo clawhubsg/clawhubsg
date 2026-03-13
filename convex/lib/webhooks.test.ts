@@ -20,7 +20,7 @@ describe('webhook config', () => {
     delete process.env.SITE_URL
     process.env.DISCORD_WEBHOOK_URL = 'https://example.com'
     const config = getWebhookConfig()
-    expect(config.siteUrl).toBe('https://clawhub.ai')
+    expect(config.siteUrl).toBe('https://clawhubsg.com')
   })
 })
 

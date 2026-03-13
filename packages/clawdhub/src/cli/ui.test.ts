@@ -31,12 +31,12 @@ describe('openInBrowser', () => {
     mockSpawn.mockReturnValueOnce(child)
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
-    openInBrowser('https://clawhub.ai')
+    openInBrowser('https://clawhubsg.com')
     child.emitError(Object.assign(new Error('not found'), { code: 'ENOENT' }))
 
     expect(logSpy).toHaveBeenCalledWith('Could not open browser automatically.')
     expect(logSpy).toHaveBeenCalledWith('Please open this URL manually:')
-    expect(logSpy).toHaveBeenCalledWith('  https://clawhub.ai')
+    expect(logSpy).toHaveBeenCalledWith('  https://clawhubsg.com')
     expect(child.unref).toHaveBeenCalledOnce()
     logSpy.mockRestore()
   })
@@ -46,7 +46,7 @@ describe('openInBrowser', () => {
     mockSpawn.mockReturnValueOnce(child)
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
-    openInBrowser('https://clawhub.ai')
+    openInBrowser('https://clawhubsg.com')
     child.emitError(Object.assign(new Error('permission denied'), { code: 'EACCES' }))
 
     expect(logSpy).not.toHaveBeenCalledWith('Could not open browser automatically.')
